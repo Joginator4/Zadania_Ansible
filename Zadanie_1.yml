@@ -1,0 +1,60 @@
+---
+- name: Configuration managment
+  hosts: all
+  become: true
+  vars:
+    - password: '$6$JJJ0DNq2zWPC9$louyEft43CXqgeIrqvW4Uf.qoWElvaRBesR.ogQbLFp0XQ4x2.QsGe.vulFT7f6hNyva03n5r3JPxrbl0Y5vb.'
+  tasks:
+    - name: Create new user
+      ansible.builtin.user:
+        name: kacperblaz
+        password: "{{password}}"
+        group: sudo
+        state: present
+
+    - name: Add user to sudoers
+      copy:
+           dest: "/etc/sudoers.d/kacperblaz"
+           content: "kacperblaz ALL=(ALL)  NOPASSWD: ALL"
+
+    - name: Update and upgrade packages
+      apt:
+        update_cache: true
+        upgrade: dist
+        cache_valid_time: 3600
+        force_apt_get: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: yes
+
+    - name: Install pip
+      apt:
+        name: pip
+        state: latest
+        
+    - name: Python Module for Docker
+      pip:
+        name: docker
+
+    - name: Add non-root users to docker group
+      user:
+        name: kacperblaz
+        group: docker
+        append: yes
+                          
+
+                                                                                    1,3           Top
+
