@@ -64,7 +64,7 @@
     - name: Clone git repository
       ansible.builtin.git:
         repo: https://github.com/Joginator4/Zadania_Ansible.git
-        dest: "/home/kacperblaz/ansible_tutorial"
+        dest: "/home/kacperblaz/ansible_zadania"
 
     - name: Create docker container with Jenkins
       docker_container:
